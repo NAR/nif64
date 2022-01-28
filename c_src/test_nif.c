@@ -49,7 +49,7 @@ repeat(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return mk_error(env, "environ_alloc_error");
     }
 
-    u_int64_t correlation_int;
+    ErlNifUInt64 correlation_int;
     if (enif_get_uint64(env, argv[1], &correlation_int) <= 0) {
         return mk_error(env, "cannot_get_correlation_id");
     }

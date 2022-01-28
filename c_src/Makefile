@@ -15,11 +15,13 @@ C_SRC_OUTPUT ?= $(CURDIR)/../priv/$(PROJECT).so
 # System type and C compiler/flags.
 
 UNAME_SYS := $(shell uname -s)
+UNAME_MACHINE := $(shell uname -m)
 ifeq ($(UNAME_SYS), Darwin)
 	CC ?= cc
-	CFLAGS ?= -O3 -std=c99 -arch x86_64 -finline-functions -Wall -Wmissing-prototypes
-	CXXFLAGS ?= -O3 -arch x86_64 -finline-functions -Wall
-	LDFLAGS ?= -arch x86_64 -flat_namespace -undefined suppress
+	CFLAGS ?= -O3 -std=c99 -arch $(UNAME_MACHINE) -finline-functions -Wall -Wmissing-prototypes
+	CXXFLAGS ?= -O3 -arch $(UNAME_MACHINE) -finline-functions -Wall
+	LDFLAGS ?= -flat_namespace -arch $(UNAME_MACHINE) -undefined suppress
+	LD = cc
 else ifeq ($(UNAME_SYS), FreeBSD)
 	CC ?= cc
 	CFLAGS ?= -O3 -std=c99 -finline-functions -Wall -Wmissing-prototypes
@@ -55,7 +57,7 @@ COMPILE_CPP = $(cpp_verbose) $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c
 
 $(C_SRC_OUTPUT): $(OBJECTS)
 	@mkdir -p $(BASEDIR)/priv/
-	$(link_verbose) $(CC) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(C_SRC_OUTPUT)
+	$(link_verbose) $(LD) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(C_SRC_OUTPUT)
 
 %.o: %.c
 	$(COMPILE_C) $(OUTPUT_OPTION) $<
